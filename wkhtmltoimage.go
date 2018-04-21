@@ -102,6 +102,10 @@ func buildParams(options *ImageOptions) ([]string, error) {
 	a = append(a, "-q")
 	a = append(a, "--disable-plugins")
 
+	// support unicode
+	a = append(a, "--encoding")
+	a = append(a, "UTF-8")
+
 	a = append(a, "--format")
 	if options.Format != "" {
 		a = append(a, options.Format)
@@ -123,10 +127,6 @@ func buildParams(options *ImageOptions) ([]string, error) {
 		a = append(a, "--quality")
 		a = append(a, strconv.Itoa(options.Quality))
 	}
-
-	// support unicode
-	a = append(a, "--encoding")
-	a = append(a, "UTF-8")
 
 	if options.CropX != 0 {
 		a = append(a, "--crop-x")

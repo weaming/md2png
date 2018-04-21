@@ -8,7 +8,7 @@ import (
 	"os"
 	"path"
 
-	"github.com/shurcooL/github_flavored_markdown"
+	"github.com/golang-commonmark/markdown"
 )
 
 type ImageRender struct {
@@ -21,8 +21,10 @@ func fatalErr(e error) {
 	}
 }
 
-func markdown2html(markdown string) string {
-	return string(github_flavored_markdown.Markdown([]byte(markdown)))
+func markdown2html(text string) string {
+	// return string(github_flavored_markdown.Markdown([]byte(markdown)))
+	md := markdown.New(markdown.XHTMLOutput(true), markdown.Nofollow(true))
+	return md.RenderToString([]byte(text))
 }
 
 func (r *ImageRender) generateImage(html, format, output string, width, quality int) []byte {
@@ -66,12 +68,17 @@ func main() {
 	width := flag.Int("w", 960, "output image width")
 	quality := flag.Int("q", 80, "output image quality, maxium is 100")
 	cssPath := flag.String("css", "", "optional css file path, support any style you like❤️, include fonts!")
+	staticPath := flag.String("static", ".", "static files path")
+
 	debug := flag.Bool("debug", false, "show generated html")
 	flag.Parse()
 
 	if *outputPath == "" {
 		*outputPath = replaceExt(path.Base(*markdownPath), "png")
 	}
+
+	// prepare static files
+	go staticServer(*staticPath)
 
 	imgRender := ImageRender{BinaryPath: binPath}
 	md := readFile(*markdownPath)
