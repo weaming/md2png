@@ -24,7 +24,8 @@ Render markdown file to PNG image.
 
 ## Example css:
 
-- [Markdown CSS](http://markdowncss.github.io/)
+- https://github.com/jasonm23/markdown-css-themes
+- http://markdowncss.github.io
 
 ## Screenshot
 
