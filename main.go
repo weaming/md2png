@@ -68,7 +68,7 @@ func main() {
 	width := flag.Int("w", 960, "output image width")
 	quality := flag.Int("q", 80, "output image quality, maxium is 100")
 	cssPath := flag.String("css", "", "optional css file path, support any style you like❤️, include fonts!")
-	staticPath := flag.String("static", ".", "static files path")
+	// staticPath := flag.String("static", ".", "static files path")
 
 	debug := flag.Bool("debug", false, "show generated html")
 	flag.Parse()
@@ -78,7 +78,7 @@ func main() {
 	}
 
 	// prepare static files
-	go staticServer(*staticPath)
+	// go staticServer(*staticPath)
 
 	imgRender := ImageRender{BinaryPath: binPath}
 	md := readFile(*markdownPath)
