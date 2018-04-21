@@ -20,6 +20,14 @@ Render markdown file to PNG image.
       -w int
             output image width (default 960)
 
-## example css:
+## Example css:
 
 - [Markdown CSS](http://markdowncss.github.io/)
+
+## ScreenShots
+
+![](screenshots/README.png)
+
+Using retro.css:
+
+![](screenshots/README-retro.png)

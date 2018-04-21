@@ -67,8 +67,10 @@ func main() {
 	cssPath := flag.String("css", "", "optional css file path, support any style you like❤️, include fonts!")
 	debug := flag.Bool("debug", false, "show generated html")
 	flag.Parse()
-	*outputPath = replaceExt(path.Base(*markdownPath), "png")
-	fmt.Println(*outputPath)
+
+	if *outputPath == "" {
+		*outputPath = replaceExt(path.Base(*markdownPath), "png")
+	}
 
 	imgRender := ImageRender{BinaryPath: binPath}
 	md := readFile(*markdownPath)
