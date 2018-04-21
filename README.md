@@ -12,13 +12,13 @@ Render markdown file to PNG image.
       -bin string
             wkhtmltoimage bin path (default "/usr/local/bin/wkhtmltoimage")
       -css string
-            optional css file path, support any style you like❤️, include fonts
+            optional css file path, support any style you like❤️, include fonts!
       -debug
             show generated html
       -m string
             markdown file path
       -o string
-            output file path (default "output.png")
+            output file path (default same as markdown file name)
       -w int
             output image width (default 960)
 
@@ -26,10 +26,6 @@ Render markdown file to PNG image.
 
 - [Markdown CSS](http://markdowncss.github.io/)
 
-## ScreenShots
+## Screenshot
 
 ![](screenshots/README.png)
-
-Using retro.css:
-
-![](screenshots/README-retro.png)
