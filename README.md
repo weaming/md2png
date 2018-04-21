@@ -1,6 +1,6 @@
 Render markdown file to PNG image.
 
-# Install
+## Install
 
     go get github.com/weaming/md2png
 
@@ -20,3 +20,6 @@ Render markdown file to PNG image.
       -w int
             output image width (default 960)
 
+## example css:
+
+- [Markdown CSS](http://markdowncss.github.io/)
