@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
+	"path"
 
 	"github.com/shurcooL/github_flavored_markdown"
 )
@@ -53,14 +54,21 @@ func readFile(path string) string {
 	return string(bytes)
 }
 
+func replaceExt(name, newExt string) string {
+	ext := path.Ext(name)
+	return name[0:len(name)-len(ext)] + "." + newExt
+}
+
 func main() {
 	binPath := flag.String("bin", "/usr/local/bin/wkhtmltoimage", "wkhtmltoimage bin path")
 	markdownPath := flag.String("m", "", "markdown file path")
-	outputPath := flag.String("o", "output.png", "output file path")
-	cssPath := flag.String("css", "", "optional css file path, support any style you like❤️, include fonts")
+	outputPath := flag.String("o", "", "output file path (default same as markdown file name)")
 	width := flag.Int("w", 960, "output image width")
+	cssPath := flag.String("css", "", "optional css file path, support any style you like❤️, include fonts!")
 	debug := flag.Bool("debug", false, "show generated html")
 	flag.Parse()
+	*outputPath = replaceExt(path.Base(*markdownPath), "png")
+	fmt.Println(*outputPath)
 
 	imgRender := ImageRender{BinaryPath: binPath}
 	md := readFile(*markdownPath)
