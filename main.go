@@ -57,13 +57,21 @@ func main() {
 	binPath := flag.String("bin", "/usr/local/bin/wkhtmltoimage", "wkhtmltoimage bin path")
 	markdownPath := flag.String("m", "", "markdown file path")
 	outputPath := flag.String("o", "output.png", "output file path")
-	width := flag.Int("w", 500, "output image width")
+	cssPath := flag.String("css", "", "optional css file path, support any style you like❤️, include fonts")
+	width := flag.Int("w", 960, "output image width")
+	debug := flag.Bool("debug", false, "show generated html")
 	flag.Parse()
 
 	imgRender := ImageRender{BinaryPath: binPath}
 	md := readFile(*markdownPath)
 	html := markdown2html(md)
-	fmt.Println(html)
+	if *cssPath != "" {
+		html = renderCSS(*cssPath) + html
+	}
+
+	if *debug {
+		fmt.Println(html)
+	}
 
 	imgRender.generateImage(html, "png", *outputPath, *width, 100)
 }
