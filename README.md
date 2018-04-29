@@ -30,3 +30,8 @@ Render markdown file to PNG image.
 ## Screenshot
 
 ![](screenshots/README.png)
+
+## `wkhtmltoimage` download url
+
+- https://github.com/wkhtmltopdf/wkhtmltopdf/releases
+- Mac executable: https://github.com/nicholasklick/wkhtmltoimage-binary/tree/master/libexec
