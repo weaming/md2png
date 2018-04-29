@@ -22,10 +22,10 @@ Render markdown file to PNG image.
       -w int
             output image width (default 960)
 
-## Example css:
+## Example css
 
 - https://github.com/jasonm23/markdown-css-themes
-- http://markdowncss.github.io
+- https://github.com/mixu/markdown-styles
 
 ## Screenshot
 
