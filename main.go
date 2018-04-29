@@ -21,10 +21,10 @@ func main() {
 
 	flag.Var(&cssUrlList, "cssurl", "CSS URLs [repeatable, optional]")
 	flag.Var(&cssFileList, "cssfile", "css file path, support any style you like❤️, include fonts! [repeatable, optional]")
-	cssName := flag.String("cssname", "", "use builtin css from github.com/mixu/markdown-styles, e.g. thomasf-solarizedcsslight")
+	cssName := flag.String("cssname", "", "use builtin css from github.com/mixu/markdown-styles:" + cssListHelpText)
 	//staticPath := flag.String("static", ".", "static files path")
 
-	debug := flag.Bool("debug", false, "show generated html")
+	print := flag.Bool("print", false, "print generated html")
 	flag.Parse()
 	if *cssName != "" {
 		cssUrlList = append(cssUrlList, getCssUrl(*cssName))
@@ -49,9 +49,9 @@ func main() {
 	}
 
 	md := ReadFile(*markdownPath)
-	html += markdown2html(md)
+	html += "\n\n" + markdown2html(md)
 
-	if *debug {
+	if *print {
 		fmt.Println(html)
 	}
 
@@ -83,6 +83,19 @@ func (r *ImageRender) generateImage(html, format, output string, width, quality 
 	return out
 }
 
+// builtin css
+
+var cssListHelpText = `
+	jasonm23-dark
+	jasonm23-foghorn
+	jasonm23-markdown
+	jasonm23-swiss
+	markedapp-byword
+	thomasf-solarizedcssdark
+	thomasf-solarizedcsslight
+`
+
 func getCssUrl(name string) string{
 	return fmt.Sprintf("https://raw.githubusercontent.com/mixu/markdown-styles/master/output/%v/assets/style.css", name)
 }
+
