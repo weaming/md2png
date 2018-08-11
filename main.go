@@ -39,7 +39,7 @@ func main() {
 
 	imgRender := ImageRender{BinaryPath: binPath}
 
-	var html string
+	html := `<meta http-equiv="content-Type" content="text/html; charset=UTF-8" />`
 	for _, f := range cssFileList {
 		html += renderCssPath(f)
 	}
@@ -48,7 +48,7 @@ func main() {
 	}
 
 	md := ReadFile(*markdownPath)
-	html = fmt.Sprintf("%v\n\n<div class='container'>%v</div>", html, markdown2html(md))
+	html = fmt.Sprintf("%v\n\n<div class='container'>\n%v\n</div>", html, markdown2html(md))
 
 	if *print {
 		fmt.Println(html)
