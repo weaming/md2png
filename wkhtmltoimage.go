@@ -77,7 +77,7 @@ func GenerateImage(options *ImageOptions) ([]byte, error) {
 	output, err := cmd.CombinedOutput()
 
 	if err != nil {
-		log.Println("can't generate file ", err)
+		log.Println("can't generate file:", err)
 		return nil, err
 	}
 	if options.Output == "" && len(output) > 0 {

@@ -20,8 +20,8 @@ func main() {
 	quality := flag.Int("q", 80, "output image quality, maxium is 100")
 
 	flag.Var(&cssUrlList, "cssurl", "CSS URLs [repeatable, optional]")
-	flag.Var(&cssFileList, "cssfile", "css file path, support any style you like❤️, include fonts! [repeatable, optional]")
-	cssName := flag.String("cssname", "", "use builtin css from github.com/mixu/markdown-styles:" + cssListHelpText)
+	flag.Var(&cssFileList, "cssfile", "css file path, support any style you like❤️ , include fonts! [repeatable, optional]")
+	cssName := flag.String("cssname", "", "use builtin css from github.com/mixu/markdown-styles:"+cssListHelpText)
 	//staticPath := flag.String("static", ".", "static files path")
 
 	print := flag.Bool("print", false, "print generated html")
@@ -33,7 +33,6 @@ func main() {
 	if *outputPath == "" {
 		*outputPath = ReplaceExt(path.Base(*markdownPath), "png")
 	}
-
 
 	//prepare static files
 	//go staticServer(*staticPath)
@@ -49,7 +48,7 @@ func main() {
 	}
 
 	md := ReadFile(*markdownPath)
-	html += "\n\n" + markdown2html(md)
+	html = fmt.Sprintf("%v\n\n<div class='container'>%v</div>", html, markdown2html(md))
 
 	if *print {
 		fmt.Println(html)
@@ -95,7 +94,6 @@ var cssListHelpText = `
 	thomasf-solarizedcsslight
 `
 
-func getCssUrl(name string) string{
+func getCssUrl(name string) string {
 	return fmt.Sprintf("https://raw.githubusercontent.com/mixu/markdown-styles/master/output/%v/assets/style.css", name)
 }
-
