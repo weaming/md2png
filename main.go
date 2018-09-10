@@ -48,7 +48,7 @@ func main() {
 	}
 
 	md := ReadFile(*markdownPath)
-	html = fmt.Sprintf("%v\n\n<div class='main container content'>\n%v\n</div>", html, markdown2html(md))
+	html = fmt.Sprintf("%v\n\n<div class='main container content article'>\n%v\n</div>", html, markdown2html(md))
 
 	if *print {
 		fmt.Println(html)
