@@ -15,17 +15,20 @@ func main() {
 	binPath := flag.String("bin", "/usr/local/bin/wkhtmltoimage", "wkhtmltoimage bin path")
 	markdownPath := flag.String("m", "", "markdown file path")
 	outputPath := flag.String("o", "", "output file path (default same as markdown file name)")
+	htmlFile := flag.String("html", "", "file path of HTML content. CSS relative options will ignore if include-css flag is not true")
 
 	width := flag.Int("w", 960, "output image width")
 	quality := flag.Int("q", 80, "output image quality, maxium is 100")
 
 	flag.Var(&cssUrlList, "cssurl", "CSS URLs [repeatable, optional]")
-	flag.Var(&cssFileList, "cssfile", "css file path, support any style you like❤️ , include fonts! [repeatable, optional]")
-	cssName := flag.String("cssname", "", "use builtin css from github.com/mixu/markdown-styles:"+cssListHelpText)
+	flag.Var(&cssFileList, "cssfile", "CSS file path, support any style you like❤️ , include fonts! [repeatable, optional]")
+	cssName := flag.String("cssname", "", "use builtin CSS from github.com/mixu/markdown-styles:"+cssListHelpText)
 	//staticPath := flag.String("static", ".", "static files path")
 
 	print := flag.Bool("print", false, "print generated html")
+	includeCSS := flag.Bool("include-css", false, "include css file as html header when read content from *.html file")
 	flag.Parse()
+
 	if *cssName != "" {
 		cssUrlList = append(cssUrlList, getCssUrl(*cssName))
 	}
@@ -37,23 +40,35 @@ func main() {
 	//prepare static files
 	//go staticServer(*staticPath)
 
-	imgRender := ImageRender{BinaryPath: binPath}
-
-	html := `<meta http-equiv="content-Type" content="text/html; charset=UTF-8" />`
-	for _, f := range cssFileList {
-		html += renderCssPath(f)
+	header := ""
+	if *htmlFile == "" || *includeCSS {
+		header = `<meta http-equiv="content-Type" content="text/html; charset=UTF-8" />`
+		for _, f := range cssFileList {
+			header += renderCssPath(f)
+		}
+		for _, u := range cssUrlList {
+			header += renderCssUrl(u)
+		}
 	}
-	for _, u := range cssUrlList {
-		html += renderCssUrl(u)
+
+	html := ""
+	if *htmlFile == "" {
+		md := ReadFile(*markdownPath)
+		html = fmt.Sprintf("%v\n\n<div class='main container content article'>\n%v\n</div>", header, markdown2html(md))
+	} else {
+		if *includeCSS {
+			html = header + ReadFile(*htmlFile)
+		} else {
+			html = ReadFile(*htmlFile)
+		}
 	}
 
-	md := ReadFile(*markdownPath)
-	html = fmt.Sprintf("%v\n\n<div class='main container content article'>\n%v\n</div>", html, markdown2html(md))
-
+	// renderHTML
 	if *print {
 		fmt.Println(html)
 	}
 
+	imgRender := ImageRender{BinaryPath: binPath}
 	imgRender.generateImage(html, "png", *outputPath, *width, *quality)
 }
 
