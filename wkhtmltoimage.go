@@ -101,6 +101,8 @@ func buildParams(options *ImageOptions) ([]string, error) {
 	// might want to add --javascript-delay too?
 	a = append(a, "-q")
 	a = append(a, "--disable-plugins")
+	a = append(a, "--javascript-delay")
+	a = append(a, "2000")
 
 	// support unicode
 	a = append(a, "--encoding")

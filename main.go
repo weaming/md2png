@@ -3,6 +3,10 @@ package main
 import (
 	"flag"
 	"fmt"
+	"io/ioutil"
+	"net/http"
+	"net/url"
+	"os"
 	"path"
 
 	"github.com/golang-commonmark/markdown"
@@ -27,39 +31,44 @@ func main() {
 
 	print := flag.Bool("print", false, "print generated html")
 	includeCSS := flag.Bool("include-css", false, "include css file as html header when read content from *.html file")
+	url := flag.String("url", "", "capture screenshot of the url")
 	flag.Parse()
 
-	if *cssName != "" {
-		cssUrlList = append(cssUrlList, getCssUrl(*cssName))
-	}
-
-	if *outputPath == "" {
-		*outputPath = ReplaceExt(path.Base(*markdownPath), "png")
-	}
-
-	//prepare static files
-	//go staticServer(*staticPath)
-
-	header := ""
-	if *htmlFile == "" || *includeCSS {
-		header = `<meta http-equiv="content-Type" content="text/html; charset=UTF-8" />`
-		for _, f := range cssFileList {
-			header += renderCssPath(f)
-		}
-		for _, u := range cssUrlList {
-			header += renderCssUrl(u)
-		}
-	}
-
 	html := ""
-	if *htmlFile == "" {
-		md := ReadFile(*markdownPath)
-		html = fmt.Sprintf("%v\n\n<div class='main container content article'>\n%v\n</div>", header, markdown2html(md))
+	if *url != "" {
+		html = GetHTMLFromURL(*url)
 	} else {
-		if *includeCSS {
-			html = header + ReadFile(*htmlFile)
+		if *cssName != "" {
+			cssUrlList = append(cssUrlList, getCssUrl(*cssName))
+		}
+
+		if *outputPath == "" {
+			*outputPath = ReplaceExt(path.Base(*markdownPath), "png")
+		}
+
+		//prepare static files
+		//go staticServer(*staticPath)
+
+		header := ""
+		if *htmlFile == "" || *includeCSS {
+			header = `<meta http-equiv="content-Type" content="text/html; charset=UTF-8" />`
+			for _, f := range cssFileList {
+				header += renderCssPath(f)
+			}
+			for _, u := range cssUrlList {
+				header += renderCssUrl(u)
+			}
+		}
+
+		if *htmlFile == "" {
+			md := ReadFile(*markdownPath)
+			html = fmt.Sprintf("%v\n\n<div class='main container content article'>\n%v\n</div>", header, markdown2html(md))
 		} else {
-			html = ReadFile(*htmlFile)
+			if *includeCSS {
+				html = header + ReadFile(*htmlFile)
+			} else {
+				html = ReadFile(*htmlFile)
+			}
 		}
 	}
 
@@ -80,6 +89,35 @@ func markdown2html(text string) string {
 	// return string(github_flavored_markdown.Markdown([]byte(markdown)))
 	md := markdown.New(markdown.XHTMLOutput(true), markdown.Nofollow(true))
 	return md.RenderToString([]byte(text))
+}
+
+func GetHTMLFromURL(URL string) string {
+	u, err := url.Parse(URL)
+	if err != nil {
+		panic(err)
+	}
+	baseUrl := path.Dir(u.Path)
+	if baseUrl != "." && baseUrl != "" {
+		u.Path = baseUrl
+	}
+	base := u.String()
+
+	rv := ""
+	response, err := http.Get(URL)
+	if err != nil {
+		fmt.Printf("%s", err)
+		os.Exit(1)
+	} else {
+		defer response.Body.Close()
+		contents, err := ioutil.ReadAll(response.Body)
+		if err != nil {
+			fmt.Printf("%s", err)
+			os.Exit(1)
+		}
+		rv += fmt.Sprintf("<head><base href=\"%v\"></head>", base)
+		rv += string(contents)
+	}
+	return rv
 }
 
 func (r *ImageRender) generateImage(html, format, output string, width, quality int) []byte {

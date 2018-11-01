@@ -2,9 +2,9 @@ package main
 
 import (
 	"io/ioutil"
+	"log"
 	"os"
 	"path"
-	"log"
 )
 
 func ExistFile(filename string) bool {
